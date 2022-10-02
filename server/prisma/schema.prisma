@@ -1,0 +1,103 @@
+// ================ PRISMA CONFIG ================ //
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// ================ ACCOUNT MODEL ================ //
+
+model Account {
+    id          Int           @id @default(autoincrement())
+    email       String        @unique
+    password    String
+    role        Role          @default(USER)
+    emailVerify Boolean       @default(true)
+    createdAt   String
+    updateAt    DateTime      @updatedAt
+    forms       Form[]
+    confirmLink ConfirmLink[]
+
+    @@map("accounts")
+}
+
+// ================ FORM MODEL ================ //
+
+model Form {
+    id              Int       @id @default(autoincrement())
+    formName        String
+    hostname        String
+    formEmail       String
+    formEmailVerify Boolean   @default(false)
+    dnsActivated    Boolean   @default(false)
+    txtRecord       String
+    formActivated   Boolean   @default(false)
+    formSent        Int       @default(0)
+    createdAt       String
+    account         Account?  @relation(fields: [accountId], references: [id])
+    accountId       Int?
+    options         Options[]
+
+    @@map("forms")
+}
+
+// ================ OPTIONS MODEL ================ //
+
+model Options {
+    id               Int      @id @default(autoincrement())
+    subject          String?
+    required         Json?
+    check            Json?
+    goBack           String?
+    success          String?
+    optionsActivated Boolean?
+    createdAt        String
+    form             Form?    @relation(fields: [formId], references: [id])
+    formId           Int?
+
+    @@map("options")
+}
+
+// ================ CONFIRM LINK MODEL ================ //
+
+model ConfirmLink {
+    id        Int     @id @default(autoincrement())
+    key       String? @db.VarChar(500)
+    kind      Kind
+    payload   String
+    createdAt String
+    accountId Int
+    account   Account @relation(fields: [accountId], references: [id])
+
+    @@map("confirm_links")
+}
+
+// ================ VERIFICATION CODE MODEL ================ //
+
+model VerificationCode {
+    id        Int    @id @default(autoincrement())
+    code      String @unique
+    kind      Kind
+    payload   String
+    createdAt String
+
+    @@map("verification_codes")
+}
+
+// ================ ENUM ================ //
+
+enum Role {
+    ADMIN
+    USER
+}
+
+enum Kind {
+    verifyAccountEmail
+    verifyFormEmail
+    updateAccountEmail
+    updateFormEmail
+}
