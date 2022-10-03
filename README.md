@@ -52,7 +52,7 @@
             - password1: type string.
             - password2: type string.
         - <ins>STATUS CODE:</ins>
-            - 200: OK, Account Created.
+            - 201: OK, Account Created.
             - 400: Bad Request.
             - 409: Conflict.
             - 500: Internal Server Error.
