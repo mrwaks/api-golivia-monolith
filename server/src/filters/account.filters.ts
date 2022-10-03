@@ -50,19 +50,22 @@ const accountFilters = {
     },
     signupStep2: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { key, password1, password2 } = req.body;
+            const body = {
+                key: req.body.key,
+                password1: req.body.password1,
+                password2: req.body.password2,
+            };
 
-            if (!key) {
-                throw new HTTP400Error(fString(config.messages.http._400.missing, { element: "Verification Code Encrypted" }));
-            }
-            if (!password1) {
-                throw new HTTP400Error(fString(config.messages.http._400.missing, { element: "Password1" }));
-            }
-            if (!password2) {
-                throw new HTTP400Error(fString(config.messages.http._400.missing, { element: "Password2" }));
-            }
+            Object.entries(body).forEach(entry => {
+                const key = entry[0];
+                const value = entry[1];
+
+                if (!value) {
+                    throw new HTTP400Error(fString(config.messages.http._400.missing, { element: key }));
+                }
+            })
     
-            const keyDecrypted = JSON.parse(await crypto.decrypt(key)).toString();
+            const keyDecrypted = JSON.parse(await crypto.decrypt(body.key)).toString();
             if (!regexp.isValidCode.test(keyDecrypted)) {
                 throw new HTTP500Error();
             }
@@ -73,11 +76,10 @@ const accountFilters = {
                 throw new HTTP409Error(fString(config.messages.http._400.invalid, { element: "Key" }));
             }
 
-            if (!regexp.isValidPassword.test(password1) || !regexp.isValidPassword.test(password1)) {
+            if (!regexp.isValidPassword.test(body.password1) || !regexp.isValidPassword.test(body.password1)) {
                 throw new HTTP400Error(config.messages.http._400.invalidPassword);
             }
-
-            if (password1 !== password2) {
+            if (body.password1 !== body.password2) {
                 throw new HTTP400Error("password1 not equal to password2");
             }
 
@@ -85,7 +87,7 @@ const accountFilters = {
 
             res.locals.verifCodeID = verificationCode.id;
             res.locals.accountEmail = accountEmail;
-            res.locals.password = password1;
+            res.locals.password = body.password1;
 
             next();
         } catch (error) {
