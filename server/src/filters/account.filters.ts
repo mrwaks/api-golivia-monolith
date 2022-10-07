@@ -18,8 +18,8 @@ import config from "../config";
 import crypto from "../config/crypto.config";
 
 // Database
-import VerifCode from "../database/dao/verifCode.db";
-import Account from "../database/dao/account.db";
+import VerifCode from "../database/dao/VerifCode.db";
+import Account from "../database/dao/Account.db";
 
 // Utils
 import regexp from "../utils/regex.util";

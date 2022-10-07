@@ -16,7 +16,7 @@ import config from "../config";
 import regexp from "../utils/regex.util";
 
 // Database
-import VerifCode from "../database/dao/verifCode.db";
+import VerifCode from "../database/dao/VerifCode.db";
 
 const verifCodeFilters = {
     isValidCode: async (req: Request, res: Response, next: NextFunction) => {
