@@ -3,12 +3,18 @@
 // Npm Modules
 import express from "express";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import helmet from "helmet";
 
 // Middlewares
 import noXss from "./middlewares/no-xss.middleware";
 
 // Config
-import configRoutes from "./config/routes.config";
+import configFilters from "./config/config-routes/filters.config";
+import configController from "./config/config-routes/controllers.config";
+import configAuth from "./config/config-routes/auth.config";
+import { configSession } from "./config/session.config";
 
 // Routes
 import routes from "./routes";
@@ -18,13 +24,21 @@ import { errorHandler } from "./errorHandler";
 
 const app = express();
 
+app.disable("x-powered-by");
+
 app
     .use(express.json())
     .use(express.urlencoded({ extended: true }))
+    .use(helmet())
+    .use(cors())
+    .use(cookieParser())
     .use(noXss)
+    .use(configSession())
     .use(morgan("dev"));
 
-configRoutes(app, routes);
+configAuth(app, routes);
+configFilters(app, routes);
+configController(app, routes);
 
 app
     .use(errorHandler.returnError)

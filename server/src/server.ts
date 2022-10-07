@@ -2,14 +2,13 @@
 
 // Core Modules
 import { createServer } from "http";
+import { EOL } from "os";
 
 // Types
 import { SystemError } from "./types";
 
 // Application
 import app from "./app";
-
-const httpPort = "3000";
 
 const normalizePort = (val: string) => {
     const port = parseInt(val, 10);
@@ -23,7 +22,7 @@ const normalizePort = (val: string) => {
     return false;
 };
 
-const port = normalizePort(process.env.PORT || httpPort);
+const port = normalizePort(process.env.PORT || process.env.PORT_CONFIG);
 app.set("port", port);
 
 const errorHandler = (error: SystemError) => {
@@ -60,6 +59,6 @@ server.on("listening", () => {
 });
 
 process.on("SIGINT", () => {
-    console.log("Server interrupted by 'SIGINT'");
+    console.log(`${EOL}Server interrupted by 'SIGINT'`);
     process.exit(1);
 });

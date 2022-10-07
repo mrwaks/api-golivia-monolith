@@ -20,6 +20,7 @@ const accountRoutes: Routes[] = [
     {
         url: baseUrl + "/account/signup/step1",
         method: "POST",
+        auth: false,
         controller: accountController.signupStep1,
         filters: [
             accountFilters.signupStep1,
@@ -28,6 +29,7 @@ const accountRoutes: Routes[] = [
     {
         url: baseUrl + "/account/signup/step2",
         method: "POST",
+        auth: false,
         controller: accountController.signupStep2,
         filters: [
             accountFilters.signupStep2,
@@ -36,10 +38,26 @@ const accountRoutes: Routes[] = [
     {
         url: baseUrl + "/account/verification-code",
         method: "POST",
+        auth: false,
         controller: verifCodeController,
         filters: [
             verifCodeFilters.isValidCode,
         ],
+    },
+    {
+        url: baseUrl + "/account/login",
+        method: "POST",
+        auth: false,
+        controller: accountController.login,
+        filters: [
+            accountFilters.login,
+        ],
+    },
+    {
+        url: baseUrl + "/account/logout",
+        method: "GET",
+        auth: "USER",
+        controller: accountController.logout,
     },
 ];
 

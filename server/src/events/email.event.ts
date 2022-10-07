@@ -1,12 +1,15 @@
 "use strict";
 
+// Npm Modules
+import { SendMailOptions } from "nodemailer";
+
 // Core Modules
 import { EventEmitter } from "events";
 
 // Config
 import transport from "../config/nodemailer.config";
 
-import { SendMailOptions } from "nodemailer";
+// Error Handler
 import { HTTP500Error } from "../errorHandler";
 
 const emailEvent = new EventEmitter();

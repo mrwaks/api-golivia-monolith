@@ -18,6 +18,7 @@ const adminRoutes: Routes[] = [
     {
         url: baseUrl + "/admin/delete-account/:accountId",
         method: "DELETE",
+        auth: false,
         controller: adminController.deleteAccount,
         filters: [
             adminFilters.isAdminKeyValid,
@@ -26,6 +27,7 @@ const adminRoutes: Routes[] = [
     {
         url: baseUrl + "/admin/accounts/:accountId",
         method: "GET",
+        auth: "ADMIN",
         controller: adminController.getAccount,
         filters: [
             adminFilters.isAdminKeyValid,
@@ -34,6 +36,7 @@ const adminRoutes: Routes[] = [
     {
         url: baseUrl + "/admin/accounts",
         method: "GET",
+        auth: "ADMIN",
         controller: adminController.getAccounts,
         filters: [
             adminFilters.isAdminKeyValid,

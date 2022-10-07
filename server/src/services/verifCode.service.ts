@@ -8,7 +8,7 @@ import { Kind } from "@prisma/client";
 import { PayloadVerificationCode } from "../types";
 
 // Database
-import verifCodeDB from "../database/dao/verifCode.db";
+import VerifCode from "../database/dao/VerifCode.db";
 
 // Error Handler
 import { HTTP400Error } from "../errorHandler";
@@ -25,7 +25,7 @@ const verifCodeService = {
      * Send a verification code to validate the first registration step.
      */
     sendCode: async (kind: Kind, payload: PayloadVerificationCode): Promise<void> => {
-        const isCodeExists = await verifCodeDB.findFirstCode({
+        const isCodeExists = await VerifCode.find({
             kind: kind,
             payload: JSON.stringify(payload),
         });
@@ -33,7 +33,7 @@ const verifCodeService = {
             throw new HTTP400Error(fString(config.messages.http._400.alreadySent, { element: "Verification Code" }));
         }
 
-        const verifCode = await verifCodeDB.createCode(kind, JSON.stringify(payload));
+        const verifCode = await VerifCode.create(kind, JSON.stringify(payload));
 
         emailEvent.emit("send", {
             from: "Golivia <confirm@golivia.io>",
@@ -48,7 +48,7 @@ const verifCodeService = {
      * Send a payload to the client, for the second registration step.
      */
     sendClientPayload: async (verifCode: string) => {
-        const code = await verifCodeDB.findFirstCode({
+        const code = await VerifCode.find({
             code: verifCode,
         });
 

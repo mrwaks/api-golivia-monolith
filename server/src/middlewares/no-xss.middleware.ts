@@ -4,7 +4,7 @@
 import fString from "../modules/fString.module";
 
 // Types
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 
 // Error Handler
 import { HTTP400Error } from "../errorHandler"; 
@@ -15,7 +15,7 @@ import regexp from "../utils/regex.util";
 // Config
 import config from "../config";
 
-const noXss = (req: Request, res: Response, next: NextFunction) => {
+const noXss: RequestHandler = (req, res, next) => {
     try {
         const body = req.body;
         const query = req.query;

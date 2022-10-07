@@ -18,8 +18,8 @@ import config from "../config";
 import crypto from "../config/crypto.config";
 
 // Database
-import verifCodeDB from "../database/dao/verifCode.db";
-import accountDB from "../database/dao/account.db";
+import VerifCode from "../database/dao/verifCode.db";
+import Account from "../database/dao/account.db";
 
 // Utils
 import regexp from "../utils/regex.util";
@@ -32,10 +32,12 @@ const accountFilters = {
             if (!accountEmail) {
                 throw new HTTP400Error(fString(config.messages.http._400.missing, { element: "Email" }));
             }
-            // if (!isEmail(accountEmail)) {
-            //     throw new HTTP400Error(fString(config.messages.http._400.invalid, { element: "Email" }));
-            // }
-            if (await accountDB.findAccount({ email: accountEmail })) {
+            if (config.environmentVariables.env.inProd) {
+                if (!isEmail(accountEmail)) {
+                    throw new HTTP400Error(fString(config.messages.http._400.invalid, { element: "Email" }));
+                }
+            }
+            if (await Account.find({ email: accountEmail })) {
                 throw new HTTP409Error(fString(config.messages.http._409.alreadyExists, { element: "Account" }));
             }
             if (await isDisposableEmail(accountEmail)) {
@@ -69,7 +71,7 @@ const accountFilters = {
             if (!regexp.isValidCode.test(keyDecrypted)) {
                 throw new HTTP500Error();
             }
-            const verificationCode = await verifCodeDB.findFirstCode({
+            const verificationCode = await VerifCode.find({
                 code: keyDecrypted,
             });
             if (!verificationCode) {
@@ -89,6 +91,30 @@ const accountFilters = {
             res.locals.accountEmail = accountEmail;
             res.locals.password = body.password1;
 
+            next();
+        } catch (error) {
+            next(error);
+        }
+    },
+    login: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body = {
+                accountEmail: req.body.accountEmail,
+                password: req.body.password,
+            };
+
+            Object.entries(body).forEach(entry => {
+                const key = entry[0];
+                const value = entry[1];
+
+                if (!value) {
+                    throw new HTTP400Error(fString(config.messages.http._400.missing, { element: key }));
+                }
+            });
+
+            res.locals.accountEmail = body.accountEmail;
+            res.locals.password = body.password;
+            
             next();
         } catch (error) {
             next(error);

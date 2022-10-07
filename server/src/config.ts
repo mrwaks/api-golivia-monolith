@@ -46,6 +46,10 @@ const config = {
         admin: {
             key: process.env.ADMIN_KEY,
         },
+        env: {
+            inProd: process.env.NODE_ENV === "production",
+            inDev: process.env.NODE_ENV !== "production",
+        },
     },
 };
 

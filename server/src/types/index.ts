@@ -17,6 +17,7 @@ export interface SystemError {
 export interface Routes {
     url: string;
     method: "GET" | "POST" | "PUT" | "DELETE";
+    auth: "ADMIN" | "USER" | false,
     controller: RequestHandler;
     filters?: RequestHandler[];
 }

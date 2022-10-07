@@ -38,7 +38,7 @@ const disposableEmails = [
     "teleworm.us", "ci.mintemail.com", "mintemail.com"
 ];
 
-const isDisposableEmail = (email: string) => {
+const isDisposableEmail = (email: string): Promise<boolean> => {
     return new Promise((resolve, _) => {
         let isDisposableEmail: string[] = [];
         for (const disposableEmail of disposableEmails) {

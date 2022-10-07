@@ -16,7 +16,7 @@ import config from "../config";
 import regexp from "../utils/regex.util";
 
 // Database
-import verifCodeDB from "../database/dao/verifCode.db";
+import VerifCode from "../database/dao/verifCode.db";
 
 const verifCodeFilters = {
     isValidCode: async (req: Request, res: Response, next: NextFunction) => {
@@ -29,7 +29,7 @@ const verifCodeFilters = {
             if (!regexp.isValidCode.test(verifCode)) {
                 throw new HTTP400Error(fString(config.messages.http._400.invalid, { element: "Verification Code" }));
             }
-            const isCodeExists = await verifCodeDB.findFirstCode({
+            const isCodeExists = await VerifCode.find({
                 code: verifCode,
             });
             if (!isCodeExists) {

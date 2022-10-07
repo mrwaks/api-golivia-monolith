@@ -6,18 +6,21 @@ import prisma from "../db.config";
 // Types
 import { Account } from "@prisma/client";
 
-const accountDB = {
-    findAccount: async (props: Partial<Account>) => {
+class AccountDB {
+
+    static find = async (props: Partial<Account>) => {
         const account = await prisma.account.findFirst({
             where: props,
         });
         return account;
-    },
-    findAccounts: async () => {
+    };
+
+    static findMany = async () => {
         const accounts = await prisma.account.findMany();
         return accounts;
-    },
-    createAccount: async (email: string, hash: string) => {
+    };
+
+    static create = async (email: string, hash: string) => {
         const account = await prisma.account.create({
             data: {
                 email: email,
@@ -27,8 +30,9 @@ const accountDB = {
             },
         });
         return account;
-    },
-    updateAccount: async (accountId: number, updatedData: Partial<Account>) => {
+    };
+
+    static update = async (accountId: number, updatedData: Partial<Account>) => {
         const updatedAccount = await prisma.account.update({
             where: {
                 id: accountId,
@@ -36,8 +40,9 @@ const accountDB = {
             data: updatedData,
         });
         return updatedAccount;
-    },
-    deleteAccount: async (accountId: number) => {
+    };
+
+    static delete = async (accountId: number) => {
         let isDeleted = false;
 
         const account  = await prisma.account.findUnique({
@@ -56,7 +61,8 @@ const accountDB = {
         }
         
         return isDeleted;
-    },
-};
+    };
 
-export default accountDB;
+}
+
+export default AccountDB;
